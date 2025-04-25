@@ -40,3 +40,23 @@ func (l *life) toggleFullscreen() {
 
 	}
 }
+
+func (l *life) handleControls() {
+	if rl.IsKeyPressed(rl.KeyF) {
+		l.resetGame()
+		l.toggleFullscreen()
+	}
+
+	if rl.IsKeyPressed(rl.KeyR) && l.isGameOver {
+		l.resetGame()
+	}
+}
+
+func (l *life) resetGame() {
+	l.generation = 0
+	l.liveCells = 0
+	l.isGameOver = false
+	l.previousLiveCells = 0
+	l.stableCycles = 0
+	l.initGrid()
+}

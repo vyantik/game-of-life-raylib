@@ -58,3 +58,40 @@ func (l *life) drawUI() {
 	rl.DrawRectangle(bgPosX, bgPosY, bgWidth, bgHeight, bgColor)
 	rl.DrawText(uiText, textPosX, textPosY, fontSize, textColor)
 }
+
+func (l *life) drawGameOver() {
+	currentScreenWidth := int32(rl.GetScreenWidth())
+	currentScreenHeight := int32(rl.GetScreenHeight())
+
+	fontSize := max(int32(currentScreenHeight/15), 30)
+	var gameOverText string
+	if l.liveCells == 0 {
+		gameOverText = "Game over - All cells died!"
+	} else {
+		gameOverText = "Congratulations - is STABLE!"
+	}
+
+	textWidth := rl.MeasureText(gameOverText, fontSize)
+	textPosX := (currentScreenWidth - textWidth) / 2
+	textPosY := currentScreenHeight / 2
+
+	padding := fontSize
+	bgColor := rl.NewColor(0, 0, 0, 200)
+	rl.DrawRectangle(
+		textPosX-padding,
+		textPosY-padding,
+		textWidth+padding*2,
+		fontSize+padding*2,
+		bgColor,
+	)
+
+	rl.DrawText(gameOverText, textPosX, textPosY, fontSize, rl.White)
+
+	hintText := "Press 'R' to restart"
+	hintFontSize := fontSize / 2
+	hintWidth := rl.MeasureText(hintText, hintFontSize)
+	hintPosX := (currentScreenWidth - hintWidth) / 2
+	hintPosY := textPosY + fontSize + padding
+
+	rl.DrawText(hintText, hintPosX, hintPosY, hintFontSize, rl.White)
+}

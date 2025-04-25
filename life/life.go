@@ -24,7 +24,11 @@ type life struct {
 
 	cellSize int32
 
+	previousLiveCells int
+	stableCycles      int
+
 	isFullscreen bool
+	isGameOver   bool
 }
 
 func NewLife(screenWidth, screenHeight, cellSize int32) *life {
@@ -52,6 +56,9 @@ func NewLife(screenWidth, screenHeight, cellSize int32) *life {
 		generation:           0,
 		liveCells:            0,
 		isFullscreen:         false,
+		isGameOver:           false,
+		previousLiveCells:    0,
+		stableCycles:         0,
 	}
 }
 
@@ -66,15 +73,9 @@ func (l *life) Start() {
 	backgroundColor := rl.NewColor(30, 30, 30, 255)
 
 	for !rl.WindowShouldClose() {
+		l.handleControls()
 
-		if rl.IsKeyPressed(rl.KeyF) {
-			l.toggleFullscreen()
-		}
-
-		l.updateGrid()
-		l.generation++
-
-		l.liveCells = l.countLiveCells()
+		l.handleGameOver()
 
 		windowTitle := fmt.Sprintf("Игра в жизнь - Генерация: %d | Живых клеток: %d", l.generation, l.liveCells)
 		rl.SetWindowTitle(windowTitle)
@@ -88,6 +89,10 @@ func (l *life) Start() {
 			l.drawUI()
 		} else {
 			l.drawHint()
+		}
+
+		if l.isGameOver {
+			l.drawGameOver()
 		}
 
 		rl.EndDrawing()
