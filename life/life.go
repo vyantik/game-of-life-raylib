@@ -70,7 +70,7 @@ func (l *life) Start() {
 	rl.InitWindow(l.screenWidth, l.screenHeight, "Игра в жизнь")
 
 	l.initGrid()
-	rl.SetTargetFPS(60)
+	rl.SetTargetFPS(0)
 
 	backgroundColor := rl.NewColor(30, 30, 30, 255)
 

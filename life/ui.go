@@ -20,7 +20,7 @@ func (l *life) drawHint() {
 }
 
 func (l *life) drawUI() {
-	uiText := fmt.Sprintf("Generation: %d\nAlive cells: %d", l.generation, l.liveCells)
+	uiText := fmt.Sprintf("Generation: %d\nAlive cells: %d\nFPS: %d", l.generation, l.liveCells, rl.GetFPS())
 
 	currentScreenWidth := int32(rl.GetScreenWidth())
 	currentScreenHeight := int32(rl.GetScreenHeight())
@@ -39,7 +39,15 @@ func (l *life) drawUI() {
 	bgPosX := textPosX - padding
 	bgPosY := textPosY - padding
 	bgWidth := textWidth + 2*padding
-	bgHeight := fontSize*2 + padding*2
+
+	lineCount := int32(1)
+	for _, char := range uiText {
+		if char == '\n' {
+			lineCount++
+		}
+	}
+
+	bgHeight := fontSize*lineCount + 2*padding
 	bgColor := rl.NewColor(0, 0, 0, 150)
 
 	if bgPosX < 0 {
