@@ -29,6 +29,8 @@ type life struct {
 
 	isFullscreen bool
 	isGameOver   bool
+
+	previousGrids [][][]bool
 }
 
 func NewLife(screenWidth, screenHeight, cellSize int32) *life {

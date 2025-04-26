@@ -1,5 +1,7 @@
 package life
 
+import "reflect"
+
 func (l *life) handleGameOver() {
 	if !l.isGameOver {
 		prevGrid := make([][]bool, l.gridWidth)
@@ -14,31 +16,24 @@ func (l *life) handleGameOver() {
 
 		if l.liveCells == 0 {
 			l.isGameOver = true
-		} else if l.liveCells == l.previousLiveCells {
-			diffCells := 0
-			totalCells := 0
+			return
+		}
 
-			for i := int32(0); i < l.gridWidth; i++ {
-				for j := int32(0); j < l.gridHeight; j++ {
-					if i < int32(len(prevGrid)) && j < int32(len(prevGrid[i])) &&
-						i < int32(len(l.grid)) && j < int32(len(l.grid[i])) {
-						totalCells++
-						if prevGrid[i][j] != l.grid[i][j] {
-							diffCells++
-						}
-					}
-				}
+		for _, previousState := range l.previousGrids {
+			if reflect.DeepEqual(previousState, l.grid) {
+				l.isGameOver = true
+				return
 			}
+		}
 
-			threshold := totalCells * 10 / 100
-
-			if diffCells <= threshold {
-				l.stableCycles++
-				if l.stableCycles >= 3 {
-					l.isGameOver = true
-				}
-			} else {
-				l.stableCycles = 0
+		if len(l.previousGrids) >= 10 {
+			l.previousGrids = l.previousGrids[1:]
+		}
+		l.previousGrids = append(l.previousGrids, prevGrid)
+		if l.previousLiveCells == l.liveCells {
+			l.stableCycles++
+			if l.stableCycles >= 10 {
+				l.isGameOver = true
 			}
 		} else {
 			l.stableCycles = 0
